@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Be My Valentine 💘</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #ff4e88, #ff9a9e);
+    overflow: hidden;
+}
+
+/* CARD CENTER */
+.card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    backdrop-filter: blur(20px);
+    background: rgba(255,255,255,0.15);
+    border-radius: 30px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    width: 420px;
+    padding: 80px 50px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* BUTTON AREA */
+.buttons {
+    position: relative;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* BUTTONS */
+button {
+    width: 140px;
+    height: 50px;
+    font-size: 16px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+#yesBtn {
+    background: #00c853;
+    color: white;
+    position: relative;
+    z-index: 5;
+}
+
+#yesBtn:hover {
+    transform: scale(1.05);
+}
+
+#noBtn {
+    background: #ff1744;
+    color: white;
+    position: relative;
+    z-index: 3;
+}
+
+/* TITLE BUTTON */
+.startBtn {
+    background: white;
+    color: #ff4e88;
+    width: 160px;
+    height: 50px;
+    border-radius: 15px;
+}
+
+/* HEARTS */
+.heart {
+    position: fixed;
+    bottom: -20px;
+    width: 20px;
+    height: 20px;
+    background: red;
+    transform: rotate(45deg);
+    animation: floatUp linear forwards;
+}
+
+.heart::before,
+.heart::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: red;
+    border-radius: 50%;
+}
+
+.heart::before { top: -10px; left: 0; }
+.heart::after { left: -10px; top: 0; }
+
+@keyframes floatUp {
+    0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+    100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="titleScreen">
+    <h1>💖 Hey You 💖</h1>
+    <p>I have something important to ask...</p>
+    <button id="startBtn" class="startBtn">Click to Begin</button>
+</div>
+
+<div class="card hidden" id="mainScreen">
+    <h1>Will you be my Valentine? 💘</h1>
+    <div class="buttons" id="buttonArea">
+        <button id="yesBtn">Yes 💖</button>
+        <button id="noBtn">No 😐</button>
+    </div>
+</div>
+
+<script>
+const startBtn = document.getElementById("startBtn");
+const titleScreen = document.getElementById("titleScreen");
+const mainScreen = document.getElementById("mainScreen");
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const buttonArea = document.getElementById("buttonArea");
+
+let clickCount = 0;
+let isAbsolute = false;
+
+startBtn.addEventListener("click", () => {
+    titleScreen.classList.add("hidden");
+    setTimeout(() => mainScreen.classList.remove("hidden"), 300);
+});
+
+noBtn.addEventListener("click", () => {
+    clickCount++;
+
+    if (!isAbsolute) {
+        const rect = noBtn.getBoundingClientRect();
+        const parentRect = buttonArea.getBoundingClientRect();
+
+        noBtn.style.position = "absolute";
+        noBtn.style.left = rect.left - parentRect.left + "px";
+        noBtn.style.top = rect.top - parentRect.top + "px";
+
+        isAbsolute = true;
+    }
+
+    const maxX = buttonArea.clientWidth - noBtn.offsetWidth;
+    const maxY = buttonArea.clientHeight - noBtn.offsetHeight;
+
+    const randomX = Math.random() * maxX;
+    const randomY = Math.random() * maxY;
+
+    noBtn.style.left = randomX + "px";
+    noBtn.style.top = randomY + "px";
+
+    if (clickCount % 3 === 0) {
+        const stage = (clickCount / 3) % 3;
+        let message;
+
+        if (stage === 1) message = "Broski just pick yes";
+        else if (stage === 2) message = "Pick yes.";
+        else message = "I will bomb you. Ik where you live.";
+
+        setTimeout(() => alert(message), 200);
+    }
+});
+
+yesBtn.addEventListener("click", () => {
+    alert("Good boy!");
+    launchHearts();
+});
+
+function launchHearts() {
+    for (let i = 0; i < 40; i++) {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.animationDuration = (2 + Math.random() * 2) + "s";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 4000);
+    }
+}
+</script>
+
+</body>
+</html>
